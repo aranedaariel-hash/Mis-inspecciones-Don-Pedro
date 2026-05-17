@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mis Inspecciones</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- ═════════════ HOME ═════════════ -->
+<div id="s-home" class="screen on">
+  <div class="topbar">
+    <div class="topbar-logo">SGL <em>Don Pedro</em> — Inspector</div>
+    <button class="tbtn accent" onclick="newForm()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Nueva inspección
+    </button>
+  </div>
+
+  <div class="home-hero">
+    <div style="margin-bottom:14px;display:inline-block;"><img src="img/logo.png" alt="SGL Don Pedro" style="height:72px;object-fit:contain;border-radius:12px;padding:6px 10px;background:#fff;"><div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--b300);margin-top:6px;">Control de carga y egreso</div></div>
+    <div class="hero-title">Mis Inspecciones</div>
+    <div class="hero-sub">SGL Don Pedro</div>
+  </div>
+
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card active" id="fc-presentadas" onclick="setFilter('presentadas')"><div class="stat-n" id="st-total">0</div><div class="stat-l">Presentadas</div></div>
+    <div class="stat-card" id="fc-cargada" onclick="setFilter('cargada')"><div class="stat-n" id="st-draft">0</div><div class="stat-l">Cargadas</div></div>
+    <div class="stat-card" id="fc-remito" onclick="setFilter('remito')"><div class="stat-n" id="st-done">0</div><div class="stat-l">Remito firmado</div></div>
+  </div>
+
+  <div class="folder-header">
+    <div class="folder-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div>
+      <div class="folder-title">Mis inspecciones</div>
+      <div class="folder-count" id="folder-count">0 inspecciones guardadas</div>
+    </div>
+  </div>
+
+  <div class="folder-body" id="folder-body">
+    <div class="empty-folder" id="empty-msg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      <div>No hay inspecciones guardadas aún.</div>
+      <div style="margin-top:4px;">Creá una nueva para empezar.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═════════════ FORM ═════════════ -->
+<div id="s-form" class="screen">
+  <div class="form-topbar">
+    <button class="tbtn ghost" onclick="goHome()" style="padding:6px 10px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <input class="form-title-input" id="form-title" type="text" placeholder="Nombre de la inspección…" maxlength="80">
+    <button class="tbtn ghost" id="btn-save-top" onclick="saveForm()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Guardar
+    </button>
+    <button class="tbtn accent" onclick="printForm()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Imprimir
+    </button>
+  </div>
+
+  <div class="form-wrap">
+
+    <!-- 01 TRANSPORTE -->
+    <div class="fcard">
+      <div class="fcard-head"><span class="fcard-head-n">01</span><span class="fcard-head-t">Datos del transporte</span></div>
+      <div class="fcard-body">
+        <div class="fg fg3" style="margin-bottom:10px;">
+          <div class="field"><label>Transporte</label><select id="f-transporte">
+              <option value="">— Seleccionar —</option>
+              <option>EL AGUILUCHO</option>
+              <option>DON PEDRO</option>
+              <option>PETROLERA ALVEAR</option>
+              <option>CELSUR</option>
+              <option>MOYA</option>
+              <option>LODDIN</option>
+              <option>GAFOR</option>
+              <option>CLI.RET.</option>
+              <option>OTROS</option>
+            </select></div>
+          <div class="field"><label>Nombre conductor</label><input type="text" id="f-nombre" class="ucase" placeholder="Apellido y nombre" oninput="autoNameForm()"></div>
+          <div class="field"><label>DNI</label><input type="text" id="f-dni" class="ucase" placeholder="Nº de documento"></div>
+        </div>
+        <div class="fg fg3">
+          <div class="field"><label>Patente tractor</label><input type="text" id="f-patentes" class="ucase" placeholder="AAA 123" class="ucase"></div>
+          <div class="field"><label>Orden / Shipment</label><input type="text" id="f-shipment" class="ucase" placeholder="Número"></div>
+          <div class="field"><label>Tipo de camión</label>
+            <select id="f-camion">
+              <option value="">— Seleccionar —</option>
+              <option value="standard">Standard</option>
+              <option value="escalable-d">Escalable D</option>
+              <option value="escalable-c">Escalable C</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg fg3" style="margin-top:0;margin-bottom:0;">
+          <div class="field"><label>Patente semi</label><input type="text" id="f-patente-semi" class="ucase" placeholder="AAA 123"></div>
+          <div class="field"><label>Cliente</label><input type="text" id="f-cliente" class="ucase" placeholder="Cliente"></div>
+          <div class="field"><label>Destino</label><select id="f-destino">
+            <option value="">— Seleccionar —</option>
+            <option>BS.AS.</option>
+            <option>INT.</option>
+            <option>EXPO</option>
+          </select></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 02 TIPO DE CARGA -->
+    <div class="fcard">
+      <div class="fcard-head" style="display:flex;align-items:center;">
+        <span class="fcard-head-n">02</span>
+        <span class="fcard-head-t" style="flex:1;">Tipo de carga</span>
+        <button class="tbtn accent" onclick="openModoCarga()" style="font-size:11px;padding:5px 11px;border-radius:5px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Modo Carga
+        </button>
+      </div>
+      <div class="fcard-body">
+        <div class="cargo-sel-row">
+          <label>Tipo:</label>
+          <select id="tipo-carga" onchange="switchCargo(this.value)">
+            <option value="">— Seleccionar —</option>
+            <option value="pal60">Paletizada × 60</option>
+            <option value="pal55">Paletizada × 55</option>
+            <option value="bol1200">Bolsones × 1200 KS</option>
+            <option value="bol1500">Bolsones × 1500 KS</option>
+            <option value="granel">Granel</option>
+            <option value="barrido">Barrido</option>
+          </select>
+        </div>
+
+        <!-- PAL60 -->
+        <div class="cargo-block" id="cb-pal60">
+          <div class="block-label">Carga Paletizada × 60</div>
+          <table class="ctbl" id="tbl-pal60" style="display:none;">
+            <thead><tr><th>Lote</th><th>Producto</th><th>Pal.com.</th><th>Pal.inc.</th><th>Bolsas</th><th>Cant.bolsas</th><th>KG</th></tr></thead>
+            <tbody id="bd-pal60"></tbody>
+          </table>
+          <div id="mc-readonly-pal60" class="mc-readonly-list"></div>
+          <div class="total-neto-bar"><label>Total neto:</label><span class="total-neto-val" id="tn-pal60">—</span></div>
+          <div class="total-neto-bar" style="border-top:0.5px solid var(--color-border-tertiary);border-radius:0;"><label>Total bolsas:</label><span class="total-neto-val" id="total-bolsas-pal60">—</span></div>
+        </div>
+
+        <!-- PAL55 -->
+        <div class="cargo-block" id="cb-pal55">
+          <div class="block-label">Carga Paletizada × 55</div>
+          <table class="ctbl" id="tbl-pal55" style="display:none;">
+            <thead><tr><th>Lote</th><th>Producto</th><th>Pal.com.</th><th>Pal.inc.</th><th>Bolsas</th><th>Cant.bolsas</th><th>KG</th></tr></thead>
+            <tbody id="bd-pal55"></tbody>
+          </table>
+          <div id="mc-readonly-pal55" class="mc-readonly-list"></div>
+          <div class="total-neto-bar"><label>Total neto:</label><span class="total-neto-val" id="tn-pal55">—</span></div>
+          <div class="total-neto-bar" style="border-top:0.5px solid var(--color-border-tertiary);border-radius:0;"><label>Total bolsas:</label><span class="total-neto-val" id="total-bolsas-pal55">—</span></div>
+        </div>
+
+        <!-- BOL1200 -->
+        <div class="cargo-block" id="cb-bol1200">
+          <div class="block-label">Carga Bolsones × 1200 KS</div>
+          <table class="ctbl" id="tbl-bol1200" style="display:none;">
+            <thead><tr><th>Lote</th><th>Producto</th><th>Bolsones</th><th>KG</th></tr></thead>
+            <tbody id="bd-bol1200"></tbody>
+          </table>
+          <div id="mc-readonly-bol1200" class="mc-readonly-list"></div>
+          <div class="total-neto-bar"><label>Total neto:</label><span class="total-neto-val" id="tn-bol1200">&#8212;</span></div>
+        </div>
+
+        <!-- BOL1500 -->
+        <div class="cargo-block" id="cb-bol1500">
+          <div class="block-label">Carga Bolsones × 1500 KS</div>
+          <table class="ctbl" id="tbl-bol1500" style="display:none;">
+            <thead><tr><th>Lote</th><th>Producto</th><th>Bolsones</th><th>KG</th></tr></thead>
+            <tbody id="bd-bol1500"></tbody>
+          </table>
+          <div id="mc-readonly-bol1500" class="mc-readonly-list"></div>
+          <div class="total-neto-bar"><label>Total neto:</label><span class="total-neto-val" id="tn-bol1500">&#8212;</span></div>
+        </div>
+
+        <!-- GRANEL -->
+        <div class="cargo-block" id="cb-granel">
+          <div class="block-label">Granel</div>
+          <table class="ctbl" id="tbl-granel" style="display:none;">
+            <thead><tr><th>Lote</th><th>Producto</th><th>Contenedor</th><th>Precinto</th></tr></thead>
+            <tbody id="bd-granel"></tbody>
+          </table>
+          <div id="mc-readonly-granel" class="mc-readonly-list"></div>
+        </div>
+
+        <!-- BARRIDO -->
+        <div class="cargo-block" id="cb-barrido">
+          <div class="block-label">Barrido</div>
+          <table class="ctbl" id="tbl-barrido" style="display:none;">
+            <thead><tr><th>Lote</th><th>Producto</th><th>KG</th></tr></thead>
+            <tbody id="bd-barrido"></tbody>
+          </table>
+          <div id="mc-readonly-barrido" class="mc-readonly-list"></div>
+          <div class="total-neto-bar"><label>Total neto:</label><span class="total-neto-val" id="tn-barrido">&#8212;</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 OBSERVACIONES -->
+    <div class="fcard">
+      <div class="fcard-head"><span class="fcard-head-n">03</span><span class="fcard-head-t">Observaciones</span></div>
+      <div class="fcard-body">
+        <table class="otbl">
+          <thead><tr><th style="width:38%">Ítem</th><th style="width:58px">Sí</th><th style="width:58px">No</th><th>Detalle</th></tr></thead>
+          <tbody>
+            <tr><td class="ol">Etiquetas</td><td class="ck" data-r="0" data-c="si"></td><td class="ck" data-r="0" data-c="no"></td><td class="of"><input type="text" placeholder="Observación…"></td></tr>
+            <tr><td class="ol">Carga mojada</td><td class="ck" data-r="1" data-c="si"></td><td class="ck" data-r="1" data-c="no"></td><td class="of"><input type="text" placeholder="Observación…"></td></tr>
+            <tr><td class="ol">Error de carga</td><td class="ck" data-r="2" data-c="si"></td><td class="ck" data-r="2" data-c="no"></td><td class="of"><input type="text" placeholder="Observación…"></td></tr>
+            <tr><td class="ol">Carga fajada y enlonada</td><td class="ck" data-r="3" data-c="si"></td><td class="ck" data-r="3" data-c="no"></td><td class="of"><input type="text" placeholder="Observación…"></td></tr>
+            <tr><td class="ol">Completa carga</td><td class="ck" data-r="4" data-c="si"></td><td class="ck" data-r="4" data-c="no"></td><td class="of"><input type="text" placeholder="Observación…"></td></tr>
+            <tr><td class="ol">Lote pedido</td><td class="ck" data-r="5" data-c="si"></td><td class="ck" data-r="5" data-c="no"></td><td class="of"><input type="text" placeholder="Observación…"></td></tr>
+            <tr>
+              <td class="ol">Pedidos adicionales en textos</td>
+              <td class="ck" data-r="6" data-c="si"></td><td class="ck" data-r="6" data-c="no"></td>
+              <td class="of"><input type="text" placeholder="Detalle…"></td>
+            </tr>
+            <tr>
+              <td class="ol">&gt;4 Lotes mismo producto</td>
+              <td class="ck-prod ck" data-c="si"></td>
+              <td class="ck-prod ck" data-c="no"></td>
+              <td class="of"><input type="text" id="obs-prod-rep" readonly style="background:var(--s2);font-weight:500;" placeholder="—"></td>
+            </tr>
+            <tr>
+              <td class="ol" style="font-size:11px;">Tolerancia de bolsas rotas excedida</td>
+              <td class="ck-tol ck" data-c="si"></td>
+              <td class="ck-tol ck" data-c="no"></td>
+              <td style="padding:4px 6px;">
+                <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+                  <select id="sel-tolerancia" onchange="calcTolerancia()" style="flex:1;min-width:110px;height:28px;border:0.5px solid var(--border);border-radius:var(--rs);background:var(--s2);font-size:11.5px;font-family:'IBM Plex Sans',sans-serif;color:var(--text);outline:none;">
+                    <option value="">-- Tolerancia --</option>
+                    <option value="1320">1320 bolsas</option>
+                    <option value="1080">1080 bolsas</option>
+                    <option value="otros">Otros</option>
+                  </select>
+                  <input type="number" id="inp-tolerancia-otros" placeholder="Nro" style="display:none;width:60px;height:28px;border:0.5px solid var(--border);border-radius:var(--rs);background:var(--s2);font-size:11.5px;padding:0 6px;outline:none;" oninput="calcTolerancia()">
+                  <input type="text" id="inp-tolerancia-result" readonly placeholder="Dif." style="width:56px;height:28px;border:0.5px solid var(--border);border-radius:var(--rs);background:var(--auto-bg);color:var(--auto-tx);font-family:'IBM Plex Mono',monospace;font-size:11px;padding:0 6px;font-weight:500;">
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="ol" style="color:var(--text3)">Observaciones generales</td>
+              <td colspan="2" style="border-right:1px solid var(--border);"></td>
+              <td class="of"><input type="text" placeholder="Texto libre…"></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="font-size:10px;color:var(--text3);margin-top:6px;">Clic en SI / NO para marcar · Clic nuevamente para desmarcar</div>
+      </div>
+    </div>
+
+    <!-- 04bis FOTOS -->
+    <div class="fcard">
+      <div class="fcard-head"><span class="fcard-head-n">04</span><span class="fcard-head-t">Fotos de carga</span></div>
+      <div class="fcard-body">
+        <div id="photo-grid" class="photo-grid"></div>
+        <div class="photo-add-row">
+          <button class="photo-add-btn" onclick="triggerPhotoAdd('camera')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Sacar foto
+          </button>
+          <button class="photo-add-btn" onclick="triggerPhotoAdd('gallery')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Adjuntar foto
+          </button>
+          <span class="photo-counter" id="photo-counter">0/4</span>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:8px;">Máximo 4 fotos. Tocá × para eliminar una foto.</div>
+      </div>
+    </div>
+
+    <!-- 05 EGRESO -->
+    <div class="fcard">
+      <div class="fcard-head"><span class="fcard-head-n">05</span><span class="fcard-head-t">Condiciones generales de egreso</span></div>
+      <div class="fcard-body">
+        <div class="fg fg3" style="margin-bottom:10px;">
+          <div class="field"><label>Número de Remito</label><input type="text" id="f-remito" class="ucase" placeholder="Nº remito"></div>
+          <div class="field"><label>Fecha de entrada</label><input type="date" id="f-fecha-entrada"></div>
+          <div class="field"><label>Hora de entrada</label><input type="time" id="f-hora-entrada"></div>
+        </div>
+        <div class="fg fg3" style="margin-bottom:10px;">
+          <div class="field"><label>Fecha de salida</label><input type="date" id="f-fecha-salida"></div>
+          <div class="field"><label>Hora de salida</label><input type="time" id="f-hora-salida"></div>
+          <div class="field"></div>
+        </div>
+        <div class="fg fg3" style="margin-bottom:12px;">
+          <div class="field"><label>Peso bruto (KS)</label><input type="text" id="f-bruto" placeholder="KS" oninput="calcNeto()"></div>
+          <div class="field"><label>Tara (KS)</label><input type="text" id="f-tara" placeholder="KS" oninput="calcNeto()"></div>
+          <div class="field"><label>Neto (KS) — automático</label><input type="text" id="f-neto" class="auto" placeholder="—" readonly></div>
+        </div>
+        <table class="kotbl">
+          <thead><tr><th style="text-align:left;">Item</th><th>Sí</th><th>No</th><th style="text-align:left;">Número / Detalle</th></tr></thead>
+          <tbody>
+            <tr><td class="kl">CAI vigente</td><td class="kck" data-r="k4" data-c="si"></td><td class="kck" data-r="k4" data-c="no"></td><td class="kv"><input type="text" id="f-cai" placeholder="Número / referencia"></td></tr>
+            <tr><td class="kl">COT</td><td class="kck" data-r="k0" data-c="si"></td><td class="kck" data-r="k0" data-c="no"></td><td class="kv"><input type="text" id="f-cot" placeholder="Número / referencia"></td></tr>
+            <tr><td class="kl">COA</td><td class="kck" data-r="k1" data-c="si"></td><td class="kck" data-r="k1" data-c="no"></td><td class="kv"><input type="text" id="f-coa" placeholder="Número / referencia"></td></tr>
+            <tr><td class="kl">Impuesto Misiones</td><td class="kck" data-r="k2" data-c="si"></td><td class="kck" data-r="k2" data-c="no"></td><td class="kv"><input type="text" id="f-imp" placeholder="Monto / referencia"></td></tr>
+            <tr><td class="kl">Error de despacho</td><td class="kck" data-r="k3" data-c="si"></td><td class="kck" data-r="k3" data-c="no"></td><td class="kv"><input type="text" id="f-err" placeholder="Descripción"></td></tr>
+          </tbody>
+        </table>
+
+        <div class="form-actions">
+          <div class="export-row" id="form-export-row" style="display:none;border-radius:var(--rs);margin-bottom:8px;">
+            <button class="exp-btn" onclick="exportExcelInsp(currentId)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              Excel inspección
+            </button>
+
+            <button class="exp-btn" onclick="exportPDFResumen(currentId)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              PDF resumen
+            </button>
+            <button class="exp-btn primary" onclick="downloadAllFiles(currentId)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Descargar todo
+            </button>
+          </div>
+          <button class="fa-btn fa-save" onclick="saveForm()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Guardar
+          </button>
+          <button class="fa-btn fa-cancel" onclick="goHome()">Cancelar</button>
+          <span class="fa-status" id="save-status"></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- MODAL ELIMINAR -->
+<div class="modal-bg" id="del-modal">
+  <div class="modal">
+    <div class="modal-title">Eliminar inspección</div>
+    <div class="modal-body" id="del-modal-body">¿Estás seguro que querés eliminar esta inspección? Esta acción no se puede deshacer.</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="modal-ok" id="del-confirm-btn">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="photo-file-input" accept="image/*" multiple style="display:none;" onchange="handlePhotoFile(this)">
+<div class="toast" id="toast"></div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+
+<!-- ══════════════════════════════════════
+     MODAL INGRESO RÁPIDO — Lote / Producto
+     ══════════════════════════════════════ -->
+<div id="entry-modal">
+  <div class="em-box">
+    <div class="em-head">
+      <span class="em-head-title" id="em-title">Ingresar Lote</span>
+      <button class="em-close" onclick="emCancel()">✕</button>
+    </div>
+
+    <!-- LOTE: 3 segmentos 4+3+3 = 10 chars -->
+    <div id="em-body-lote" class="em-body">
+      <div class="em-hint">
+        Ingresá los <strong>10 caracteres</strong> del lote en tres grupos.<br>
+        Ejemplo: <span style="font-family:monospace;font-weight:700;color:var(--b700);">C101 &nbsp;·&nbsp; Q4U &nbsp;·&nbsp; 878</span>
+      </div>
+      <div class="em-segs">
+        <input id="em-l1" class="em-seg" maxlength="4" placeholder="C101" style="width:78px;"
+          oninput="emSegInput(this,'em-l2',4)"
+          onkeydown="emSegKey(event,this,null,'em-l2')">
+        <span class="em-sep">·</span>
+        <input id="em-l2" class="em-seg" maxlength="3" placeholder="Q4U" style="width:66px;"
+          oninput="emSegInput(this,'em-l3',3)"
+          onkeydown="emSegKey(event,this,'em-l1','em-l3')">
+        <span class="em-sep">·</span>
+        <input id="em-l3" class="em-seg" maxlength="3" placeholder="878" style="width:66px;"
+          oninput="emSegInput(this,null,3)"
+          onkeydown="emSegKey(event,this,'em-l2',null)">
+      </div>
+      <div class="em-preview" id="em-lote-preview"></div>
+      <div class="em-error"  id="em-lote-error"></div>
+    </div>
+
+    <!-- PRODUCTO: campo libre -->
+    <div id="em-body-prod" class="em-body" style="display:none;">
+      <div class="em-hint">Ingresá el nombre del producto.</div>
+      <input id="em-prod" class="em-seg" placeholder="Ej: LLDPE 1613.11"
+        style="width:100%;font-size:16px;letter-spacing:1px;box-sizing:border-box;"
+        oninput="emProdInput()" onkeydown="if(event.key==='Enter')emConfirm()">
+      <div class="em-error" id="em-prod-error"></div>
+    </div>
+
+    <div class="em-actions">
+      <button class="em-btn-cancel" onclick="emCancel()">Cancelar</button>
+      <button class="em-btn-confirm" onclick="emConfirm()">✓ Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   MÓDULO INGRESO RÁPIDO — Lote / Producto
+   ═══════════════════════════════════════════ */
+
+var _emTarget    = null;
+var _emFieldType = '';
+
+/* ── Botón HTML (+) para addRow ── */
+function ocrBtnHtml(field){
+  var label = field === 'lote' ? 'Agregar Lote' : 'Agregar Producto';
+  return '<button type="button" class="ocr-btn" title="'+label+'" '+
+    'onclick="ocrOpenFromBtn(this,\''+field+'\')">+</button>';
+}
+
+/* ── Abrir modal desde botón de fila ── */
+function ocrOpenFromBtn(btn, field){
+  var td  = btn.closest('td') || btn.parentElement;
+  var inp = td.querySelector('input.ti');
+  if(!inp) return;
+  _emTarget    = inp;
+  _emFieldType = field;
+
+  ['em-l1','em-l2','em-l3'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.value = ''; el.classList.remove('ok'); }
+  });
+  document.getElementById('em-lote-preview').textContent = '';
+  document.getElementById('em-lote-error').textContent   = '';
+  var prod = document.getElementById('em-prod');
+  if(prod) prod.value = '';
+  document.getElementById('em-prod-error').textContent = '';
+
+  var isLote = (field === 'lote');
+  document.getElementById('em-title').textContent        = isLote ? 'Ingresar Lote' : 'Ingresar Producto';
+  document.getElementById('em-body-lote').style.display  = isLote ? '' : 'none';
+  document.getElementById('em-body-prod').style.display  = isLote ? 'none' : '';
+
+  document.getElementById('entry-modal').classList.add('on');
+
+  setTimeout(function(){
+    var first = isLote ? document.getElementById('em-l1') : document.getElementById('em-prod');
+    if(first) first.focus();
+  }, 80);
+}
+
+function emSegInput(el, nextId, maxLen){
+  var pos = el.selectionStart;
+  el.value = el.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+  try{ el.setSelectionRange(pos, pos); }catch(e){}
+  el.classList.toggle('ok', el.value.length === maxLen);
+  if(el.value.length >= maxLen && nextId){
+    var nx = document.getElementById(nextId);
+    nx.focus(); nx.select();
+  }
+  emUpdatePreview();
+}
+
+function emSegKey(event, el, prevId, nextId){
+  if(event.key === 'Backspace' && el.value === '' && prevId){
+    event.preventDefault();
+    var prev = document.getElementById(prevId);
+    prev.focus();
+    prev.setSelectionRange(prev.value.length, prev.value.length);
+  }
+  if(event.key === 'Enter') emConfirm();
+}
+
+function emUpdatePreview(){
+  var v1 = document.getElementById('em-l1').value;
+  var v2 = document.getElementById('em-l2').value;
+  var v3 = document.getElementById('em-l3').value;
+  var total = v1.length + v2.length + v3.length;
+  var preview = document.getElementById('em-lote-preview');
+  var error   = document.getElementById('em-lote-error');
+  if(total === 0){
+    preview.textContent = '';
+    error.textContent   = '';
+  } else {
+    preview.textContent = [v1,v2,v3].filter(Boolean).join(' · ');
+    error.textContent   = total < 10 ? (total + ' / 10 caracteres') : '';
+  }
+}
+
+function emProdInput(){
+  var el = document.getElementById('em-prod');
+  var pos = el.selectionStart;
+  el.value = el.value.toUpperCase();
+  try{ el.setSelectionRange(pos, pos); }catch(e){}
+  document.getElementById('em-prod-error').textContent = '';
+}
+
+function emConfirm(){
+  if(!_emTarget) return;
+  var val = '';
+  if(_emFieldType === 'lote'){
+    var v1 = document.getElementById('em-l1').value.trim();
+    var v2 = document.getElementById('em-l2').value.trim();
+    var v3 = document.getElementById('em-l3').value.trim();
+    val = (v1+v2+v3).toUpperCase();
+    if(val.length !== 10){
+      document.getElementById('em-lote-error').textContent =
+        'Necesitás exactamente 10 caracteres (tiene '+val.length+')';
+      return;
+    }
+  } else {
+    val = document.getElementById('em-prod').value.trim().toUpperCase();
+    if(!val){
+      document.getElementById('em-prod-error').textContent = 'Ingresá el producto';
+      return;
+    }
+  }
+  _emTarget.value = val;
+  _emTarget.readOnly = true;
+  _emTarget.classList.add('ti-confirmed');
+  _emTarget.dispatchEvent(new Event('input',  {bubbles:true}));
+  _emTarget.dispatchEvent(new Event('change', {bubbles:true}));
+  emCancel();
+  showToast('Campo completado ✓');
+}
+
+function emCancel(){
+  document.getElementById('entry-modal').classList.remove('on');
+  _emTarget = null;
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  var em = document.getElementById('entry-modal');
+  if(em) em.addEventListener('click', function(e){ if(e.target === this) emCancel(); });
+});
+</script>
+
+<!-- ═══════════════ MODO CARGA ═══════════════ -->
+<div id="s-modo-carga">
+  <div class="mc-topbar">
+    <button class="mc-btn-back" onclick="closeModoCarga()" style="padding:0 10px;height:36px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Volver
+    </button>
+    <div style="flex:1;padding-left:6px;">
+      <div class="mc-topbar-title" id="mc-titulo">Modo Carga</div>
+      <div class="mc-topbar-sub" id="mc-subtipo">—</div>
+    </div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--b300);text-align:right;">
+      <div id="mc-count-filas">0 filas</div>
+      <div id="mc-total-kg" style="color:#90caf9;font-weight:700;"></div>
+    </div>
+  </div>
+
+  <div class="mc-lista" id="mc-lista">
+    <div class="mc-empty" id="mc-empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      <div>No hay filas cargadas aún.</div>
+      <div style="margin-top:4px;font-size:11px;">Tocá "+ Agregar fila" para empezar.</div>
+    </div>
+  </div>
+
+  <div class="mc-footer">
+    <button class="mc-btn-back" onclick="closeModoCarga()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Al formulario
+    </button>
+    <button class="mc-btn-add" onclick="openMCWizard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Agregar fila
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════ WIZARD ═══════════════ -->
+<div id="mc-wizard">
+  <div class="mcw-topbar">
+    <button class="mcw-close" onclick="closeMCWizard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <span class="mcw-step-label" id="mcw-step-label">Paso 1 — Lote</span>
+  </div>
+  <div class="mcw-progress">
+    <div class="mcw-dot active" id="mcw-dot-0"></div>
+    <div class="mcw-dot" id="mcw-dot-1"></div>
+    <div class="mcw-dot" id="mcw-dot-2"></div>
+  </div>
+
+  <!-- Breadcrumb acumulado -->
+  <div id="mcw-breadcrumb" style="display:none;flex-shrink:0;padding:12px 16px 10px;background:#0a1f3d;border-bottom:2px solid #1565c0;flex-direction:column;gap:6px;">
+    <div id="mcw-bc-lote" style="font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:900;color:#ffffff;letter-spacing:4px;"></div>
+    <div id="mcw-bc-prod" style="display:none;font-size:16px;font-weight:700;color:#ffffff;letter-spacing:.5px;"></div>
+  </div>
+
+  <div class="mcw-body">
+
+    <!-- PASO 0: LOTE -->
+    <div class="mcw-step on" id="mcw-step-0">
+      <div class="mcw-title">🏷️ Lote</div>
+      <div class="mcw-subtitle">Seleccioná el prefijo y completá los 6 caracteres restantes.</div>
+      <div class="mcw-segs">
+        <select id="mcw-l1" class="mcw-seg" style="width:110px;cursor:pointer;appearance:none;-webkit-appearance:none;text-align:center;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath fill='%2390caf9' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;"
+          onchange="mcwL1Change(this)">
+          <option value="">— prefijo —</option>
+          <option value="C098">C098</option>
+          <option value="C099">C099</option>
+          <option value="C100">C100</option>
+          <option value="C101">C101</option>
+        </select>
+        <span class="mcw-sep">·</span>
+        <input id="mcw-l2" class="mcw-seg" style="width:80px;" maxlength="3" placeholder="Q4U"
+          oninput="mcwSegInput(this,'mcw-l3',3)"
+          onkeydown="mcwSegKey(event,this,'mcw-l1','mcw-l3')">
+        <span class="mcw-sep">·</span>
+        <input id="mcw-l3" class="mcw-seg" style="width:80px;" maxlength="3" placeholder="001" inputmode="numeric" pattern="[0-9]*"
+          oninput="mcwSegInput(this,null,3)"
+          onkeydown="mcwSegKey(event,this,'mcw-l2',null)">
+      </div>
+      <div class="mcw-preview" id="mcw-preview"></div>
+      <div class="mcw-error" id="mcw-error-lote"></div>
+    </div>
+
+    <!-- PASO 1: PRODUCTO -->
+    <div class="mcw-step" id="mcw-step-1">
+      <div class="mcw-title">📦 Producto</div>
+      <div class="mcw-subtitle">Ingresá el nombre del producto.</div>
+      <input id="mcw-prod" class="mcw-field" placeholder="Ej: LLDPE 1613.11"
+        oninput="this.value=this.value.toUpperCase()"
+        onkeydown="if(event.key==='Enter') mcwNext()">
+      <div class="mcw-error" id="mcw-error-prod"></div>
+    </div>
+
+    <!-- PASO 2: CANTIDADES (dinámico según tipo) -->
+    <div class="mcw-step" id="mcw-step-2">
+      <div class="mcw-title">🔢 Cantidades</div>
+      <div class="mcw-subtitle" id="mcw-qty-sub">Ingresá las cantidades.</div>
+      <div id="mcw-qty-body"></div>
+    </div>
+
+  </div>
+
+  <div class="mcw-footer">
+    <button class="mcw-btn-prev" id="mcw-btn-prev" onclick="mcwPrev()" style="display:none;">← Atrás</button>
+    <button class="mcw-btn-next" id="mcw-btn-next" onclick="mcwNext()">Siguiente →</button>
+  </div>
+</div>
+<!-- Confirmación Modo Carga -->
+<div id="mcw-confirm-overlay">
+  <div class="mcw-confirm-box">
+    <div class="mcw-confirm-title">✅ Confirmar carga</div>
+    <div id="mcw-confirm-body"></div>
+    <div class="mcw-confirm-actions">
+      <button class="mcw-confirm-btn-cancel" id="mcw-confirm-cancel">Corregir</button>
+      <button class="mcw-confirm-btn-ok" id="mcw-confirm-ok">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+
+<script src="js/app.js"></script>
+
+</body>
+</html>
